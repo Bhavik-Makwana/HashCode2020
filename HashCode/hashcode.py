@@ -62,14 +62,23 @@ class HashCode:
         
     def output(self, libraries):
         total_libs = len(libraries)
-        print(total_libs)
+        f = open("output.txt", "w")
+        # print(total_libs)
+        output_str = str(total_libs)+"\n"
+        f.write(output_str)
         for i in libraries:
-            line_1 = i['library'].lib_num, len(i['library'].scanned_books)
+            line_1 = str(i['library'].lib_num) + " " + str(len(i['library'].scanned_books))
             line_2 = ""
             for j in i['library'].scanned_books:
                 line_2 += str(j) + " "
-            print(line_1)
-            print(line_2)
+            # print(line_1)
+            # print(line_2)
+            output_str = line_1 + "\n"
+            f.write(output_str)
+            output_str = line_2 + "\n"
+            f.write(output_str)
+        
+        f.close()
 
     def merge_books_and_scores(self, books):
         books_and_scores = []
@@ -84,17 +93,17 @@ class HashCode:
     #   return best(total_time-idle_days)
     #
     def find_best_library(self, time):
-        
+        print(time)
         if len(self.libs) != 0 and time <= self.days:
             a = list(map(lambda x: self.compute_score(x, time), self.libs))
-            print("HELLO")
+            # print("HELLO")
             index = a.index(max(a, key=lambda x: x["score"]))
             best_library = a[index]
             self.libs.remove(best_library["library"])
             best_library['library'].scanned_books = best_library["scannedBooks"]
             self.scanned_books += best_library["scannedBooks"]
         
-            print("scanned books:",self.scanned_books)
+            # print("scanned books:",self.scanned_books)
             self.used_libraries.append(best_library)
             self.find_best_library(time+best_library['library'].signup_days)
             
@@ -112,15 +121,11 @@ class HashCode:
         remaining_days = self.days - current_time
         day_counter = 0
         index = 0
-        
-        
-        for book in self.scanned_books:
-            
 
-
+        # print("scun", self.scanned_books)
         for i, item in enumerate(books_and_score):
-            print("scun", self.scanned_books)
-            print(books_and_score[index][0])
+            
+            # print(books_and_score[index][0])
             if books_and_score[index][0] not in self.scanned_books:
                 x = len(books_and_score)-index
                 limit = min(library.ship_per_day, x)
@@ -131,18 +136,19 @@ class HashCode:
                     index += 1
     
                 day_counter += 1
-
+            else:
+                index += 1
             if day_counter >= remaining_days:
                 break
     
             if index > len(books_and_score)-1:
                 break
         idle_days = remaining_days - day_counter
-        print("compute", scanned_books)
+        # print("compute", scanned_books)
         return {"library": library, "score": score, "scannedBooks": scanned_books, "idleDays":idle_days}
 
 h = HashCode()
-h.read("a_example.txt")
+h.read("b_read_on.txt")
 # print(h.compute_score(h.libs[0], 0))
 # print(h.compute_score(h.libs[1], 0))
 h.find_best_library(0)
