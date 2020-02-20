@@ -3,7 +3,7 @@ import math
 
 # file = input("Enter filename:")
 
-data = input.read('d_tough_choices.txt')
+data = input.read('e_so_many_books.txt')
 
 cur_day = 0
 deadline = data["Days"]
@@ -63,6 +63,7 @@ while (books_left > 0 and cur_day < deadline and len(sign_worth_sort) > 0):
                     lib2.book_count -= 1;
         if (lib2.book_count <= 0):
             sign_worth_sort.remove(lib2)
+        lib2.worth = calculate_lib_worth(lib2.books, data["Scores"])
 
     out_str += (str(lib.lib_num)+" "+str(len(scanned)))+"\n"
     out_str += ' '.join([str(x) for x in scanned])+"\n"
