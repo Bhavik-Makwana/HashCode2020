@@ -1,18 +1,19 @@
+#!/usr/bin/python3
 class Lib:
-    book_count = 0
-    signup_days = 0
-    ship_per_day = 0
-    books = []
-    def __init__(self, s):
+    def __init__(self, s, numx):
         t = s.split()
+        self.worth = 0
+        self.lib_num = numx
         self.book_count = int(t[0])
         self.signup_days = int(t[1])
         self.ship_per_day = int(t[2])
+        self.books = []
     def load_books(self,s):
         t = s.split()
         for i in t:
             self.books.append(int(i))
     def display(self):
+        print("\n\t\t Library Number:", self.lib_num)
         print("book count:", self.book_count)
         print("Signup days:", self.signup_days)
         print("Ship per day:", self.ship_per_day)
@@ -32,12 +33,12 @@ def read(fname):
     data["Libs"] = []
     for i in range(data["LibCount"]):
         line = fp.readline()
-        newLib = Lib(line)
+        newLib = Lib(line,i)
         line = fp.readline()
         newLib.load_books(line)
         data["Libs"].append(newLib)
-    print(data)
-    for q in data["Libs"]:
-        q.display()
-    # return data
-read('a.txt')
+    # print(data)
+    # for q in data["Libs"]:
+    #     q.display()
+    return data
+# read('a.txt')
