@@ -7,6 +7,7 @@ class Lib:
         self.signup_days = int(t[1])
         self.ship_per_day = int(t[2])
         self.books = []
+        self.scanned_books = []
     def load_books(self,s):
         t = s.split()
         for i in t:
@@ -31,6 +32,8 @@ class HashCode:
     libs = []
     book_scores = ()
     scanned_books = []
+    used_libraries = []
+
     def read(self, fname):
         fp = open(fname,'r')
         data = {}
@@ -57,22 +60,49 @@ class HashCode:
         self.scores = data["Scores"]
         self.libs = data["Libs"]
         
+    def output(self, libraries):
+        total_libs = len(libraries)
+        print(total_libs)
+        for i in libraries:
+            line_1 = i['library'].lib_num, len(i['library'].scanned_books)
+            line_2 = ""
+            for j in i['library'].scanned_books:
+                line_2 += str(j) + " "
+            print(line_1)
+            print(line_2)
+
     def merge_books_and_scores(self, books):
         books_and_scores = []
         for i in books:
             books_and_scores.append((i, self.scores[i]))
         return books_and_scores
 
-    # Global library of all books scanned
-    # Open a library
-    # Wait for it to be established
-    # Once estbalished sort, books in desc order of score
-    # Remove books in new library that are in the global library
-    # scan as many books as possible in that day going down the list
+    # def best(time)
+    # compute scores of all ibraries
+    # find max score
+    # if idle days > 0
+    #   return best(total_time-idle_days)
+    #
+    def find_best_library(self, time):
+        
+        if len(self.libs) != 0 and time <= self.days:
+            a = list(map(lambda x: self.compute_score(x, time), self.libs))
+            print("HELLO")
+            index = a.index(max(a, key=lambda x: x["score"]))
+            best_library = a[index]
+            self.libs.remove(best_library["library"])
+            best_library['library'].scanned_books = best_library["scannedBooks"]
+            self.scanned_books += best_library["scannedBooks"]
+        
+            print("scanned books:",self.scanned_books)
+            self.used_libraries.append(best_library)
+            self.find_best_library(time+best_library['library'].signup_days)
+            
+    # OUT: (Library, books it scanned), order of books it scanned
 
     # IN: library, current_time
     # OUT: score, sorted_list_of_books, number of idle days 
-    def establish_library(self, library, current_time):
+    def compute_score(self, library, current_time):
         books_and_score = self.merge_books_and_scores(library.books)
         books_and_score.sort(key=operator.itemgetter(1))
         books_and_score.reverse()
@@ -81,10 +111,16 @@ class HashCode:
 
         remaining_days = self.days - current_time
         day_counter = 0
-        print(books_and_score)
         index = 0
+        
+        
+        for book in self.scanned_books:
+            
+
+
         for i, item in enumerate(books_and_score):
-            print(item)
+            print("scun", self.scanned_books)
+            print(books_and_score[index][0])
             if books_and_score[index][0] not in self.scanned_books:
                 x = len(books_and_score)-index
                 limit = min(library.ship_per_day, x)
@@ -93,16 +129,22 @@ class HashCode:
                     score += temp[1]
                     scanned_books.append(temp[0])
                     index += 1
+    
                 day_counter += 1
+
             if day_counter >= remaining_days:
                 break
+    
             if index > len(books_and_score)-1:
                 break
-        
         idle_days = remaining_days - day_counter
-        return {"score:": score, "scannedBooks": scanned_books, "idleDays":idle_days}
+        print("compute", scanned_books)
+        return {"library": library, "score": score, "scannedBooks": scanned_books, "idleDays":idle_days}
 
 h = HashCode()
 h.read("a_example.txt")
-print(h.establish_library(h.libs[0], 0))
-print(h.establish_library(h.libs[1], 0))
+# print(h.compute_score(h.libs[0], 0))
+# print(h.compute_score(h.libs[1], 0))
+h.find_best_library(0)
+
+h.output(h.used_libraries)
