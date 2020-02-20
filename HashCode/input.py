@@ -1,13 +1,10 @@
 class Lib:
-    book_count = 0
-    signup_days = 0
-    ship_per_day = 0
-    books = []
     def __init__(self, s):
         t = s.split()
         self.book_count = int(t[0])
         self.signup_days = int(t[1])
         self.ship_per_day = int(t[2])
+        self.books = []
     def load_books(self,s):
         t = s.split()
         for i in t:
