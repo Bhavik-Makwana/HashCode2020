@@ -1,4 +1,5 @@
 import operator
+import time
 class Lib:
     def __init__(self, s, numx):
         t = s.split()
@@ -31,7 +32,7 @@ class HashCode:
     scores = []
     libs = []
     book_scores = ()
-    scanned_books = []
+    scanned_books = {}
     used_libraries = []
 
     def read(self, fname):
@@ -101,7 +102,8 @@ class HashCode:
             best_library = a[index]
             self.libs.remove(best_library["library"])
             best_library['library'].scanned_books = best_library["scannedBooks"]
-            self.scanned_books += best_library["scannedBooks"]
+            for i in best_library["scannedBooks"]:
+                self.scanned_books[i] = 1
         
             # print("scanned books:",self.scanned_books)
             self.used_libraries.append(best_library)
@@ -112,6 +114,7 @@ class HashCode:
     # IN: library, current_time
     # OUT: score, sorted_list_of_books, number of idle days 
     def compute_score(self, library, current_time):
+        # t0 = time.time()
         books_and_score = self.merge_books_and_scores(library.books)
         books_and_score.sort(key=operator.itemgetter(1))
         books_and_score.reverse()
@@ -126,6 +129,7 @@ class HashCode:
         for i, item in enumerate(books_and_score):
             
             # print(books_and_score[index][0])
+        
             if books_and_score[index][0] not in self.scanned_books:
                 x = len(books_and_score)-index
                 limit = min(library.ship_per_day, x)
@@ -143,9 +147,12 @@ class HashCode:
     
             if index > len(books_and_score)-1:
                 break
+        
         idle_days = remaining_days - day_counter
         # print("compute", scanned_books)
-        return {"library": library, "score": score, "scannedBooks": scanned_books, "idleDays":idle_days}
+        # t1 = time.time()
+        # print("time:", t1-t0)
+        return {"library": library, "score": score/library.signup_days, "scannedBooks": scanned_books, "idleDays":idle_days}
 
 h = HashCode()
 h.read("b_read_on.txt")
