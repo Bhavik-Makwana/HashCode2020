@@ -19,8 +19,8 @@ class Lib:
         print(self.books)
 
 
-def read():
-    fp = open('a.txt','r')
+def read(fname):
+    fp = open(fname,'r')
     data = {}
     line = fp.readline()
     stuff = line.split()
@@ -40,4 +40,4 @@ def read():
     for q in data["Libs"]:
         q.display()
     # return data
-read()
+read('a.txt')
