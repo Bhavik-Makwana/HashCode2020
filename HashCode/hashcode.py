@@ -155,7 +155,7 @@ class HashCode:
         return {"library": library, "score": score/library.signup_days, "scannedBooks": scanned_books, "idleDays":idle_days}
 
 h = HashCode()
-h.read("b_read_on.txt")
+h.read("d_tough_choices.txt")
 # print(h.compute_score(h.libs[0], 0))
 # print(h.compute_score(h.libs[1], 0))
 h.find_best_library(0)
