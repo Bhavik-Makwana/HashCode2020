@@ -1,7 +1,9 @@
 import input
 import math
 
-data = input.read('c_incunabula.txt')
+# file = input("Enter filename:")
+
+data = input.read('d_tough_choices.txt')
 
 cur_day = 0
 deadline = data["Days"]
@@ -53,12 +55,14 @@ while (books_left > 0 and cur_day < deadline and len(sign_worth_sort) > 0):
     # Scan book until can't scan anymore -> Ignore the rest
 
     # Remove all scanned books from all other libraries
-    for lib2 in data["Libs"]:
+    for lib2 in sign_worth_sort:
         if lib2 != lib:
             for i in range(0,len(scanned)):
                 if scanned[i] in lib2.books:
                     lib2.books.remove(scanned[i]);
                     lib2.book_count -= 1;
+        if (lib2.book_count <= 0):
+            sign_worth_sort.remove(lib2)
 
     out_str += (str(lib.lib_num)+" "+str(len(scanned)))+"\n"
     out_str += ' '.join([str(x) for x in scanned])+"\n"
